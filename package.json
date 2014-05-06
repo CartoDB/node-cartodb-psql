@@ -1,0 +1,32 @@
+{
+    "name": "cartodb-psql",
+    "description": "A simple postgres wrapper with logic about username and database to connect",
+    "version": "0.1.0",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/CartoDB/node-cartodb-psql.git"
+    },
+    "keywords": [
+        "cartodb"
+    ],
+    "author": "Vizzuality <contact@vizzuality.com> (http://vizzuality.com)",
+    "contributors": [
+        "Raul Ochoa <rochoa@cartodb.com>"
+    ],
+    "licenses": [{
+        "type": "BSD",
+        "url": "https://github.com/CartoDB/node-cartodb-psql/blob/master/LICENSE"
+    }],
+    "dependencies": {
+        "pg": "~2.6.2",
+        "step": "~0.0.5",
+        "underscore"  : "~1.6.x"
+    },
+    "devDependencies": {
+        "mocha": "~1.18.x"
+    },
+    "scripts": {
+        "test": "sh ./test/run_tests.sh test/unit/*.js test/integration/*.js"
+    },
+    "engines": { "node": ">= 0.8 < 0.11" }
+}
