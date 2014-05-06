@@ -39,5 +39,23 @@ export PGHOST PGPORT
 cleanup
 createdb -Ttemplate_postgis -EUTF8 ${TEST_DB} || die "Could not create test database"
 
+# public user role
+PUBLICUSER=`node -e "console.log(require('${TESTENV}').db_pubuser || 'xxx')"`
+PUBLICPASS=`node -e "console.log(require('${TESTENV}').db_pubuser_pass || 'xxx')"`
+echo "DROP USER IF EXISTS ${PUBLICUSER};" | psql -v ON_ERROR_STOP=1 ${TEST_DB} || exit 1
+echo "CREATE USER ${PUBLICUSER} WITH PASSWORD '${PUBLICPASS}';" | psql -v ON_ERROR_STOP=1 ${TEST_DB} || exit 1
+
+# db owner role
+TESTUSER=`node -e "console.log(require('${TESTENV}').db_user || '')"`
+if test -z "$TESTUSER"; then
+  echo "Missing db_user from ${TESTENV}" >&2
+  exit 1
+fi
+TESTUSER=`echo ${TESTUSER} | sed "s/<%= user_id %>/${TESTUSERID}/"`
+TESTPASS=`node -e "console.log(require('${TESTENV}').db_user_pass || '')"`
+TESTPASS=`echo ${TESTPASS} | sed "s/<%= user_id %>/${TESTUSERID}/"`
+echo "DROP USER IF EXISTS ${TESTUSER};" | psql -v ON_ERROR_STOP=1 ${TEST_DB} || exit 1
+echo "CREATE USER ${TESTUSER} WITH PASSWORD '${TESTPASS}';" | psql -v ON_ERROR_STOP=1 ${TEST_DB} || exit 1
+
 mocha -t 5000 -u tdd $@
 exit $?
