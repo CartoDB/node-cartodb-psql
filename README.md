@@ -1,5 +1,7 @@
 Node CartoDB PSQL wrapper
 =========================
+[![Build Status](http://travis-ci.org/CartoDB/node-cartodb-psql.png)](http://travis-ci.org/CartoDB/node-cartodb-psql)
+
 A simple wrapper for [node.js' PostgreSQL client](https://github.com/brianc/node-postgres) with specific assumptions for
 CartoDB's [Windshaft](https://github.com/CartoDB/Windshaft) and [CartoDB-SQL-API](https://github.com/CartoDB/CartoDB-SQL-API)
 projects.
