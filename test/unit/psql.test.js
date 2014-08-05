@@ -39,3 +39,71 @@ suite('psql', function() {
     });
 
 });
+
+
+suite('pool params', function() {
+    var POOL_DEFAULT_SIZE,
+        POOL_DEFAULT_IDLE_TIMEOUT,
+        POOL_DEFAULT_REAP_INTERVAL;
+
+    before(function() {
+        var pg = new PSQL(dbopts_anon);
+        POOL_DEFAULT_SIZE = pg.POOL_DEFAULT_SIZE;
+        POOL_DEFAULT_IDLE_TIMEOUT = pg.POOL_DEFAULT_IDLE_TIMEOUT;
+        POOL_DEFAULT_REAP_INTERVAL = pg.POOL_DEFAULT_REAP_INTERVAL;
+    });
+
+    beforeEach(function() {
+        global.settings = {};
+    });
+
+    test('default params are used if global.settings or specific settings are not provided', function() {
+        console.log('rochoa', PSQL.POOL_DEFAULT_SIZE)
+        testPoolParams(POOL_DEFAULT_SIZE, POOL_DEFAULT_IDLE_TIMEOUT, POOL_DEFAULT_REAP_INTERVAL);
+    });
+
+    test('global pool params are used if they exist', function() {
+        var size = 1,
+            idle = 10,
+            reap = 5;
+
+        global.settings.db_pool_size = size;
+        global.settings.db_pool_idleTimeout = idle;
+        global.settings.db_pool_reapInterval = reap;
+
+        testPoolParams(size, idle, reap);
+    });
+
+    test('global pool params have precedence over default', function() {
+        var size = 1;
+        global.settings.db_pool_size = size;
+
+        testPoolParams(size, POOL_DEFAULT_IDLE_TIMEOUT, POOL_DEFAULT_REAP_INTERVAL);
+    });
+
+    test('poolParams method params are used', function() {
+        var size = 1,
+            idle = 10,
+            reap = 5;
+
+        testPoolParams(size, idle, reap, {size: size, idleTimeout: idle, reapInterval: reap});
+    });
+
+    test('poolParams have precedence over global and over default', function() {
+        var size = 1,
+            globalIdle = 10,
+            paramReap = 5;
+
+        global.settings.db_pool_idleTimeout = globalIdle;
+
+        testPoolParams(POOL_DEFAULT_SIZE, globalIdle, paramReap, {reapInterval: paramReap});
+    });
+
+    function testPoolParams(expectedSize, expectedIdleTimeout, expectedReapInterval, poolParams) {
+        var pg = new PSQL(dbopts_anon, poolParams);
+
+        assert.equal(pg.poolParams.size, expectedSize);
+        assert.equal(pg.poolParams.idleTimeout, expectedIdleTimeout);
+        assert.equal(pg.poolParams.reapInterval, expectedReapInterval);
+    }
+});
