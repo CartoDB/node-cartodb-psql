@@ -37,7 +37,7 @@ die() {
 export PGHOST PGPORT
 
 cleanup
-createdb -Ttemplate_postgis -EUTF8 ${TEST_DB} || die "Could not create test database"
+createdb -EUTF8 ${TEST_DB} || die "Could not create test database"
 
 # public user role
 PUBLICUSER=`node -e "console.log(require('${TESTENV}').db_pubuser || 'xxx')"`
