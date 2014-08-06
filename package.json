@@ -26,7 +26,7 @@
         "mocha": "~1.18.x"
     },
     "scripts": {
-        "test": "sh ./test/run_tests.sh test/unit/*.js test/integration/*.js"
+        "test": "sh ./run_tests.sh test/unit/*.js test/integration/*.js"
     },
     "engines": { "node": ">= 0.8 < 0.11" }
 }
