@@ -4,8 +4,12 @@
 export TZ='Europe/Rome'
 
 
+cd $(dirname $0)
+BASEDIR=$(pwd)
+cd -
+
 # This is where postgresql connection parameters are read from
-TESTENV=config/environments/test.js
+TESTENV="${BASEDIR}/../config/environments/test.js"
 
 # Extract postgres configuration
 PGHOST=`node -e "console.log(require('${TESTENV}').db_host || '')"`
