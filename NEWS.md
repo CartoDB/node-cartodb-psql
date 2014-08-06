@@ -1,3 +1,6 @@
+* Version 0.2.1 (2014-mm-dd)
+    -
+
 * Version 0.2.0 (2014-08-06)
     - Changes to pick pool configuration from global settings if they exist
 
