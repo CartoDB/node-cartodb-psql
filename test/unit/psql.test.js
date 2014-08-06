@@ -58,7 +58,6 @@ suite('pool params', function() {
     });
 
     test('default params are used if global.settings or specific settings are not provided', function() {
-        console.log('rochoa', PSQL.POOL_DEFAULT_SIZE)
         testPoolParams(POOL_DEFAULT_SIZE, POOL_DEFAULT_IDLE_TIMEOUT, POOL_DEFAULT_REAP_INTERVAL);
     });
 
