@@ -5,9 +5,6 @@ before_install:
   - sudo apt-add-repository --yes ppa:cartodb/postgresql-9.3
   - sudo apt-add-repository --yes ppa:cartodb/gis
   - sudo apt-get update -q
-  # Removal of postgresql-9.1-postgis-scripts is needed due to a bug in some upstream package.
-  # See http://trac.osgeo.org/ubuntugis/ticket/39
-  - sudo apt-get remove --purge -q postgresql-9.1-postgis-scripts
   - sudo apt-get install -q gdal-bin postgresql-9.3-postgis-2.1
   - createdb template_postgis
   - psql -c "CREATE EXTENSION postgis" template_postgis
