@@ -1,3 +1,6 @@
+* Version 0.3.2 (2014-mm-dd)
+
+
 * Version 0.3.1 (2014-08-11)
     - Changes pg version to emit end event on close connection event
 
