@@ -75,4 +75,12 @@ suite('psql', function() {
             });
         });
     });
+
+    test('eventedQuery provisions a cancel mechanism to abort queries', function (done) {
+        var psql = new PSQL(dbopts_auth);
+        psql.eventedQuery("SELECT 1 as foo", function(err, query, queryCanceller) {
+            assert.ok(_.isFunction(queryCanceller));
+            done();
+        });
+    });
 });
