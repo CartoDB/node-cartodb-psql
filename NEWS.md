@@ -1,4 +1,5 @@
-* Version 0.3.1 (2014-mm-dd)
+* Version 0.3.1 (2014-08-11)
+    - Changes pg version to emit end event on close connection event
 
 * Version 0.3.0 (2014-08-11)
     - Adds support for cancel a query, extracts functionality from CartoDB-SQL-API
