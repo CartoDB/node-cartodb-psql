@@ -1,4 +1,4 @@
-* Version 0.4.0 (2014-mm-dd)
+* Version 0.4.0 (2014-08-14)
     - Have PGSQL.query take an optional third argument to request read-only
       See https://github.com/CartoDB/Windshaft/issues/130
     - Send 500 status and better error message on db connection error
