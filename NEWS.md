@@ -1,3 +1,5 @@
+* Version 0.4.1 (2014-mm-dd)
+
 * Version 0.4.0 (2014-08-14)
     - Have PGSQL.query take an optional third argument to request read-only
       See https://github.com/CartoDB/Windshaft/issues/130
