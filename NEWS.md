@@ -1,5 +1,5 @@
 * Version 0.3.2 (2014-mm-dd)
-
+    - Allow to use PSQL class with default libpq parameters
 
 * Version 0.3.1 (2014-08-11)
     - Changes pg version to emit end event on close connection event
