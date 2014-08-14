@@ -1,4 +1,5 @@
 * Version 0.3.2 (2014-mm-dd)
+    - Send 500 status and better error message on db connection error
     - Allow to use PSQL class with default libpq parameters
 
 * Version 0.3.1 (2014-08-11)
