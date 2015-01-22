@@ -19,7 +19,7 @@
         "url": "https://github.com/CartoDB/node-cartodb-psql/blob/master/LICENSE"
     }],
     "dependencies": {
-        "pg": "git://github.com/CartoDB/node-postgres.git#2.6.2-cdb1",
+        "pg": "git://github.com/CartoDB/node-postgres.git#cdb-2.6-row_limit",
         "step": "~0.0.5",
         "underscore": "~1.6.x"
     },
