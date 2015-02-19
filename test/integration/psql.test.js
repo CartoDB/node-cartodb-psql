@@ -17,8 +17,13 @@ var dbopts_anon = _.clone(dbopts_auth);
 dbopts_anon.user = global.settings.db_pubuser;
 dbopts_anon.pass = global.settings.db_pubuser_pass;
 
-
+[true, false].forEach(function(useConfigObject) {
 suite('psql', function() {
+
+    suiteSetup(function(done) {
+        global.settings.db_use_config_object = useConfigObject;
+        done();
+    });
 
     test('test private user can execute SELECTS on db', function(done){
         var pg = new PSQL(dbopts_auth);
@@ -83,4 +88,5 @@ suite('psql', function() {
             done();
         });
     });
+});
 });
