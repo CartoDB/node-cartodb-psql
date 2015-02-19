@@ -41,12 +41,16 @@ suite('psql', function() {
 });
 
 
-suite('pool params', function() {
+describe('pool params', function() {
     var POOL_DEFAULT_SIZE,
         POOL_DEFAULT_IDLE_TIMEOUT,
         POOL_DEFAULT_REAP_INTERVAL;
 
+    var globalSettings;
+
     before(function() {
+        globalSettings = global.settings;
+
         var pg = new PSQL(dbopts_anon);
         POOL_DEFAULT_SIZE = pg.POOL_DEFAULT_SIZE;
         POOL_DEFAULT_IDLE_TIMEOUT = pg.POOL_DEFAULT_IDLE_TIMEOUT;
@@ -57,11 +61,15 @@ suite('pool params', function() {
         global.settings = {};
     });
 
-    test('default params are used if global.settings or specific settings are not provided', function() {
+    after(function() {
+        global.settings = globalSettings;
+    });
+
+    it('default params are used if global.settings or specific settings are not provided', function() {
         testPoolParams(POOL_DEFAULT_SIZE, POOL_DEFAULT_IDLE_TIMEOUT, POOL_DEFAULT_REAP_INTERVAL);
     });
 
-    test('global pool params are used if they exist', function() {
+    it('global pool params are used if they exist', function() {
         var size = 1,
             idle = 10,
             reap = 5;
@@ -73,14 +81,14 @@ suite('pool params', function() {
         testPoolParams(size, idle, reap);
     });
 
-    test('global pool params have precedence over default', function() {
+    it('global pool params have precedence over default', function() {
         var size = 1;
         global.settings.db_pool_size = size;
 
         testPoolParams(size, POOL_DEFAULT_IDLE_TIMEOUT, POOL_DEFAULT_REAP_INTERVAL);
     });
 
-    test('poolParams method params are used', function() {
+    it('poolParams method params are used', function() {
         var size = 1,
             idle = 10,
             reap = 5;
@@ -88,7 +96,7 @@ suite('pool params', function() {
         testPoolParams(size, idle, reap, {size: size, idleTimeout: idle, reapInterval: reap});
     });
 
-    test('poolParams have precedence over global and over default', function() {
+    it('poolParams have precedence over global and over default', function() {
         var size = 1,
             globalIdle = 10,
             paramReap = 5;
