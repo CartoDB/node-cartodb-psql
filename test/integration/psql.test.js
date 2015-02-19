@@ -90,3 +90,52 @@ suite('psql', function() {
     });
 });
 });
+
+suite('client gets keep-alive config', function() {
+    suiteSetup(function(done) {
+        global.settings.db_use_config_object = true;
+        done();
+    });
+
+    suiteTeardown(function(done) {
+        global.settings.db_use_config_object = false;
+        done();
+    });
+
+    test('keep-alive is disabled by default', function (done) {
+        var psql = new PSQL(dbopts_auth);
+        psql.connect(function(err, client, close) {
+            if (err) {
+                return done(err);
+            }
+
+            close();
+
+            assert.equal(client.connectionParameters.keepAlive, false);
+
+            done();
+        })
+    });
+
+    test('global keep-alive config is propagated to pg client', function (done) {
+        var keepAliveEnabled = true;
+        var keepAliveInitialDelay = 1000;
+        global.settings.db_keep_alive = {
+            enabled: keepAliveEnabled,
+            initialDelay: keepAliveInitialDelay
+        };
+        var psql = new PSQL(dbopts_auth);
+        psql.connect(function(err, client, close) {
+            if (err) {
+                return done(err);
+            }
+
+            close();
+
+            assert.equal(client.connectionParameters.keepAlive.enabled, keepAliveEnabled);
+            assert.equal(client.connectionParameters.keepAlive.initialDelay, keepAliveInitialDelay);
+
+            done();
+        })
+    });
+});
