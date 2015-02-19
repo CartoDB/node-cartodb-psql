@@ -1,4 +1,6 @@
-* Version 0.4.1 (2014-mm-dd)
+* Version 0.5.0 (2015-mm-dd)
+    - Propagate db_max_row_size from global settings to pg default's maxRowSize
+      Allows to set the max length in bytes for a row
 
 * Version 0.4.0 (2014-08-14)
     - Have PGSQL.query take an optional third argument to request read-only
