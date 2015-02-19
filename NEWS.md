@@ -1,5 +1,6 @@
 * Version 0.5.0 (2015-mm-dd)
     - Allow to specify keep-alive config via global.settings.db_keep_alive (#3)
+      - It requires to use config as object
     - Connection config can be an object or a connectionString
     - Propagate db_max_row_size from global settings to pg default's maxRowSize
       Allows to set the max length in bytes for a row
