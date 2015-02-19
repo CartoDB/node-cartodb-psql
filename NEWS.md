@@ -1,3 +1,5 @@
+## Version 0.5.1 (2015-mm-dd)
+
 ## Version 0.5.0 (2015-02-19)
  - Allow to specify keep-alive config via global.settings.db_keep_alive (#3)
    - It requires to use config as object
