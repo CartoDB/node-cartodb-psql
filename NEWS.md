@@ -1,4 +1,5 @@
 ## Version 0.5.1 (2015-mm-dd)
+ - Upgrades pg to 2.6.2-cdb3: keep alive set on socket connect
 
 ## Version 0.5.0 (2015-02-19)
  - Allow to specify keep-alive config via global.settings.db_keep_alive (#3)
