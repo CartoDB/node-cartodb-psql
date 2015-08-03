@@ -1,7 +1,10 @@
-var _      = require('underscore'),
-    assert = require('assert'),
-    PSQL   = require('../../lib/psql'),
-    setup  = require('../setup');
+'use strict';
+
+require('../setup');
+
+var _ = require('underscore');
+var assert = require('assert');
+var PSQL = require('../../lib/psql');
 
 var dbopts_anon = {
     host: global.settings.db_host,
@@ -11,19 +14,23 @@ var dbopts_anon = {
     pass: global.settings.db_pubuser_pass
 };
 
-suite('psql', function() {
+describe('psql', function() {
 
-    test('test throws error if no args passed to constructor', function(){
+    it('test throws error if no args passed to constructor', function(){
+        var psql;
         var msg;
         try {
-            new PSQL();
+            psql = new PSQL();
         } catch (err){
             msg = err.message;
         }
-        assert.equal(msg, "Incorrect access parameters. If you are accessing via OAuth, please check your tokens are correct. For public users, please ensure your table is published.");
+        assert.ok(!psql);
+        assert.equal(msg, "Incorrect access parameters." +
+            " If you are accessing via OAuth, please check your tokens are correct." +
+            " For public users, please ensure your table is published.");
     });
 
-    test('dbkey depends on dbopts', function(){
+    it('dbkey depends on dbopts', function(){
         var opt1 = _.clone(dbopts_anon);
         opt1.dbname = 'dbname1';
         var pg1 = new PSQL(opt1);
@@ -97,8 +104,7 @@ describe('pool params', function() {
     });
 
     it('poolParams have precedence over global and over default', function() {
-        var size = 1,
-            globalIdle = 10,
+        var globalIdle = 10,
             paramReap = 5;
 
         global.settings.db_pool_idleTimeout = globalIdle;

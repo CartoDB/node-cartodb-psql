@@ -1,7 +1,10 @@
-var _      = require('underscore'),
-    assert = require('assert'),
-    PSQL   = require('../../lib/psql'),
-    setup  = require('../setup');
+'use strict';
+
+require('../setup');
+
+var _ = require('underscore');
+var assert = require('assert');
+var PSQL = require('../../lib/psql');
 
 var public_user = global.settings.db_pubuser;
 
@@ -18,14 +21,13 @@ dbopts_anon.user = global.settings.db_pubuser;
 dbopts_anon.pass = global.settings.db_pubuser_pass;
 
 [true, false].forEach(function(useConfigObject) {
-suite('psql', function() {
+describe('psql', function() {
 
-    suiteSetup(function(done) {
+    before(function() {
         global.settings.db_use_config_object = useConfigObject;
-        done();
     });
 
-    test('test private user can execute SELECTS on db', function(done){
+    it('test private user can execute SELECTS on db', function(done){
         var pg = new PSQL(dbopts_auth);
         var sql = "SELECT 1 as test_sum";
         pg.query(sql, function(err, result){
@@ -35,18 +37,20 @@ suite('psql', function() {
         });
     });
 
-    test('test private user can execute CREATE on db', function(done){
+    it('test private user can execute CREATE on db', function(done){
         var pg = new PSQL(dbopts_auth);
-        var sql = "DROP TABLE IF EXISTS distributors; CREATE TABLE distributors (id integer, name varchar(40), UNIQUE(name))";
+        var sql = "DROP TABLE IF EXISTS distributors;" +
+            " CREATE TABLE distributors (id integer, name varchar(40), UNIQUE(name))";
         pg.query(sql, function(err/*, result*/){
             assert.ok(_.isNull(err));
             done();
         });
     });
 
-    test('test private user can execute INSERT on db', function(done){
+    it('test private user can execute INSERT on db', function(done){
         var pg = new PSQL(dbopts_auth);
-        var sql = "DROP TABLE IF EXISTS distributors1; CREATE TABLE distributors1 (id integer, name varchar(40), UNIQUE(name))";
+        var sql = "DROP TABLE IF EXISTS distributors1;" +
+            " CREATE TABLE distributors1 (id integer, name varchar(40), UNIQUE(name))";
         pg.query(sql, function(/*err, result*/){
             sql = "INSERT INTO distributors1 (id, name) VALUES (1, 'fish')";
             pg.query(sql,function(err, result){
@@ -56,9 +60,11 @@ suite('psql', function() {
         });
     });
 
-    test('test public user can execute SELECT on enabled tables', function(done){
+    it('test public user can execute SELECT on enabled tables', function(done){
         var pg = new PSQL(dbopts_auth);
-        var sql = "DROP TABLE IF EXISTS distributors2; CREATE TABLE distributors2 (id integer, name varchar(40), UNIQUE(name)); GRANT SELECT ON distributors2 TO " + public_user + ";";
+        var sql = "DROP TABLE IF EXISTS distributors2;" +
+            " CREATE TABLE distributors2 (id integer, name varchar(40), UNIQUE(name));" +
+            " GRANT SELECT ON distributors2 TO " + public_user + ";";
         pg.query(sql, function(/*err, result*/){
             pg = new PSQL(dbopts_anon);
             pg.query("SELECT count(*) FROM distributors2", function(err, result){
@@ -68,9 +74,11 @@ suite('psql', function() {
         });
     });
 
-    test('test public user cannot execute INSERT on db', function(done){
+    it('test public user cannot execute INSERT on db', function(done){
         var pg = new PSQL(dbopts_auth);
-        var sql = "DROP TABLE IF EXISTS distributors3; CREATE TABLE distributors3 (id integer, name varchar(40), UNIQUE(name)); GRANT SELECT ON distributors3 TO " + public_user + ";";
+        var sql = "DROP TABLE IF EXISTS distributors3;" +
+            " CREATE TABLE distributors3 (id integer, name varchar(40), UNIQUE(name));" +
+            " GRANT SELECT ON distributors3 TO " + public_user + ";";
         pg.query(sql, function(/*err, result*/){
 
             pg = new PSQL(dbopts_anon);
@@ -81,7 +89,7 @@ suite('psql', function() {
         });
     });
 
-    test('eventedQuery provisions a cancel mechanism to abort queries', function (done) {
+    it('eventedQuery provisions a cancel mechanism to abort queries', function (done) {
         var psql = new PSQL(dbopts_auth);
         psql.eventedQuery("SELECT 1 as foo", function(err, query, queryCanceller) {
             assert.ok(_.isFunction(queryCanceller));
@@ -91,18 +99,16 @@ suite('psql', function() {
 });
 });
 
-suite('client gets keep-alive config', function() {
-    suiteSetup(function(done) {
+describe('client gets keep-alive config', function() {
+    before(function() {
         global.settings.db_use_config_object = true;
-        done();
     });
 
-    suiteTeardown(function(done) {
+    after(function() {
         global.settings.db_use_config_object = false;
-        done();
     });
 
-    test('keep-alive is disabled by default', function (done) {
+    it('keep-alive is disabled by default', function (done) {
         var psql = new PSQL(dbopts_auth);
         psql.connect(function(err, client, close) {
             if (err) {
@@ -114,10 +120,10 @@ suite('client gets keep-alive config', function() {
             assert.equal(client.connectionParameters.keepAlive, false);
 
             done();
-        })
+        });
     });
 
-    test('global keep-alive config is propagated to pg client', function (done) {
+    it('global keep-alive config is propagated to pg client', function (done) {
         var keepAliveEnabled = true;
         var keepAliveInitialDelay = 1000;
         global.settings.db_keep_alive = {
@@ -136,6 +142,6 @@ suite('client gets keep-alive config', function() {
             assert.equal(client.connectionParameters.keepAlive.initialDelay, keepAliveInitialDelay);
 
             done();
-        })
+        });
     });
 });

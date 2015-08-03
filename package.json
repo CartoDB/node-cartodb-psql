@@ -24,10 +24,11 @@
         "underscore": "~1.6.x"
     },
     "devDependencies": {
-        "mocha": "~1.18.x"
+        "jshint": "^2.7.0",
+        "mocha": "^2.2.4"
     },
     "scripts": {
-        "test": "sh ./test/run_tests.sh test/unit/*.js test/integration/*.js"
+        "test": "make test-all"
     },
     "engines": { "node": ">= 0.8 < 0.11" }
 }

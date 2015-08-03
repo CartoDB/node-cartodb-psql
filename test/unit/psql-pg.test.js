@@ -1,8 +1,11 @@
+'use strict';
+
+require('../setup');
+
 var _ = require('underscore');
 var assert = require('assert');
 var PSQL = require('../../lib/psql');
 var pg = require('pg');
-var setup = require('../setup');
 
 var dbopts_anon = {
     host: global.settings.db_host,
@@ -30,6 +33,7 @@ describe('maxRowSize config', function() {
     it('has a default undefined maxRowSize', function() {
         var psql = new PSQL(dbopts_anon);
 
+        assert.ok(psql);
         assert.equal(pg.defaults.maxRowSize, undefined);
     });
 
@@ -38,6 +42,7 @@ describe('maxRowSize config', function() {
         global.settings.db_max_row_size = maxRowSize;
         var psql = new PSQL(dbopts_anon);
 
+        assert.ok(psql);
         assert.equal(pg.defaults.maxRowSize, maxRowSize);
     });
 });
