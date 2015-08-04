@@ -96,6 +96,26 @@ describe('psql', function() {
             done();
         });
     });
+    it('should work with parameters', function (done) {
+      var psql = new PSQL(dbopts_auth);
+      psql.query("select * from generate_series(0, $1, $2)", [99, 1],function(err, result) {
+          assert.equal(result && result.rows && result.rows.length, 100);
+          done(err);
+      });
+    });
+    it('should work with parameters as evented query', function (done) {
+      var psql = new PSQL(dbopts_auth);
+      psql.eventedQuery("select * from generate_series(0, $1, $2)", [99, 1],function(err, query) {
+          assert.ok(!err);
+          var called = 0;
+          query.on('row', function () {
+            called++;
+            if (called > 99) {
+              done();
+            }
+          }).on('error', done);
+      });
+    });
 });
 });
 
