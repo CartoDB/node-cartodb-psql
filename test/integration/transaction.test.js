@@ -5,6 +5,7 @@ require('../setup');
 var _ = require('underscore');
 var assert = require('assert');
 var PSQL = require('../../lib/psql');
+var pg = require('pg');
 
 var dbopts_auth = {
     host: global.settings.db_host,
@@ -16,43 +17,95 @@ var dbopts_auth = {
 
 var POOL_PARAMS = {};
 
+var TRANSACTION_ABORTED_ERR_MESSAGE = 'current transaction is aborted, commands ignored until end of transaction block';
+
 describe('transaction', function() {
 
-    it('query can be run after transaction fails', function(done){
-        var pg = new PSQL(dbopts_auth, POOL_PARAMS, { destroyOnError: true });
-        var sql = "BEGIN; select error; COMMIT;";
-        pg.query(sql, function(err) {
-            assert.ok(err);
-            assert.equal(err.message, 'column "error" does not exist');
+    beforeEach(function() {
+        pg.pools.all = {};
+    });
 
-            pg.query('select 1 as foo', function(err, result) {
-                assert.ok(result);
-                assert.equal(result.rows[0].foo, 1);
-                done();
+    var querySuite = [
+        {
+            destroyOnError: true,
+            assertFn: function validate(done) {
+                return function(err, result) {
+                    assert.ok(result);
+                    assert.equal(result.rows[0].foo, 1);
+                    done();
+                };
+            }
+        },
+        {
+            destroyOnError: false,
+            assertFn: function validate(done) {
+                return function(err) {
+                    assert.ok(err);
+                    assert.equal(err.message, TRANSACTION_ABORTED_ERR_MESSAGE);
+                    done();
+                };
+            }
+        }
+    ];
+
+    querySuite.forEach(function(scenario) {
+        var shouldOrShouldNot = scenario.destroyOnError ? ' ' : ' NOT ';
+        it('should' + shouldOrShouldNot + 'run query after transaction fails', function(done) {
+            var psql = new PSQL(dbopts_auth, POOL_PARAMS, { destroyOnError: scenario.destroyOnError });
+            var sql = "BEGIN; select error; COMMIT;";
+            psql.query(sql, function(err) {
+                assert.ok(err);
+                assert.equal(err.message, 'column "error" does not exist');
+                psql.query('select 1 as foo', scenario.assertFn(done));
             });
         });
     });
 
-    it('evented query can be run after transaction fails', function(done){
-        var pg = new PSQL(dbopts_auth, POOL_PARAMS, { destroyOnError: true });
-        var sql = "BEGIN; select error; COMMIT;";
-        pg.eventedQuery(sql, function(err, query) {
-
-            query.on('error', function(err) {
-                assert.ok(err);
-                assert.equal(err.message, 'column "error" does not exist');
-            });
-
-            query.on('end', function() {
-                pg.eventedQuery('select 1 as foo', function(err, query) {
+    var eventedQuerySuite = [
+        {
+            destroyOnError: true,
+            assertFn: function validate(done) {
+                return function(err, query) {
                     query.on('row', function(row) {
                         assert.ok(row);
                         assert.equal(row.foo, 1);
                         done();
                     });
-                });
-            });
+                };
+            }
+        },
+        {
+            destroyOnError: false,
+            assertFn: function validate(done) {
+                return function(err, query) {
+                    query.on('error', function(err) {
+                        assert.ok(err);
+                        assert.equal(err.message, TRANSACTION_ABORTED_ERR_MESSAGE);
+                        done();
+                    });
+                };
+            }
+        }
+    ];
 
+    eventedQuerySuite.forEach(function(scenario) {
+        var shouldOrShouldNot = scenario.destroyOnError ? ' ' : ' NOT ';
+        it('should' + shouldOrShouldNot + 'run evented query after transaction fails', function(done) {
+            var psql = new PSQL(dbopts_auth, POOL_PARAMS, { destroyOnError: scenario.destroyOnError });
+            var sql = "BEGIN; select error; COMMIT;";
+
+            psql.eventedQuery(sql, function(err, query) {
+
+                query.on('error', function(err) {
+                    assert.ok(err);
+                    assert.equal(err.message, 'column "error" does not exist');
+                });
+
+                query.on('end', function() {
+                    psql.eventedQuery('select 1 as foo', scenario.assertFn(done));
+                });
+
+            });
         });
     });
 
