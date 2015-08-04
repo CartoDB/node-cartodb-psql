@@ -1,3 +1,5 @@
+## Version 0.6.1 (2015-mm-dd)
+
 ## Version 0.6.0 (2015-08-04)
  - Updates types from pg_type.h (#1)
  - New `destroyOnError` option to remove clients from pool after a query fails
