@@ -1,4 +1,5 @@
 ## Version 0.6.0 (2015-mm-dd)
+ - Updates types from pg_type.h (#1)
  - Discourages node 0.8.x
 
 ## Version 0.5.1 (2015-02-20)
