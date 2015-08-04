@@ -1,4 +1,5 @@
 ## Version 0.6.0 (2015-mm-dd)
+ - New `destroyOnError` option to remove clients from pool after a query fails
  - Discourages node 0.8.x
 
 ## Version 0.5.1 (2015-02-20)
