@@ -1,7 +1,7 @@
 {
     "name": "cartodb-psql",
     "description": "A simple postgres wrapper with logic about username and database to connect",
-    "version": "0.5.2",
+    "version": "0.6.0",
     "main": "./lib/psql.js",
     "repository": {
         "type": "git",
