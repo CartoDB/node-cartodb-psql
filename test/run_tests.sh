@@ -61,5 +61,5 @@ TESTPASS=`echo ${TESTPASS} | sed "s/<%= user_id %>/${TESTUSERID}/"`
 echo "DROP USER IF EXISTS ${TESTUSER};" | psql -v ON_ERROR_STOP=1 ${TEST_DB} || exit 1
 echo "CREATE USER ${TESTUSER} WITH PASSWORD '${TESTPASS}';" | psql -v ON_ERROR_STOP=1 ${TEST_DB} || exit 1
 
-mocha -t 5000 -u tdd $@
+mocha -t 5000 -u tdd $@ test/**/*.js
 exit $?
