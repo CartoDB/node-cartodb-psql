@@ -7,7 +7,7 @@ CartoDB's [Windshaft](https://github.com/CartoDB/Windshaft) and [CartoDB-SQL-API
 projects.
 
 # Requirements
- * node 0.8+
+ * node >=0.10.x
  * npm
  * postgres
 
