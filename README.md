@@ -20,3 +20,7 @@ $ npm install
 ```sh
 $ npm test
 ```
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md).
