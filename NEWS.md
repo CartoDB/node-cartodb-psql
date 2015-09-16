@@ -1,4 +1,5 @@
 ## Version 0.6.1 (2015-mm-dd)
+ - Use debug module to not output to stdout by default
 
 ## Version 0.6.0 (2015-08-04)
  - Updates types from pg_type.h (#1)
