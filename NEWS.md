@@ -1,4 +1,4 @@
-## Version 0.6.1 (2015-mm-dd)
+## Version 0.6.1 (2015-09-16)
  - Use debug module to not output to stdout by default
 
 ## Version 0.6.0 (2015-08-04)
