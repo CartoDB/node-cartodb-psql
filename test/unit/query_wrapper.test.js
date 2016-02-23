@@ -116,4 +116,16 @@ describe('query_wrapper', function() {
 
         assert.equal(outputSql, expectedSql);
     });
+    
+    it('Query with comment', function(){
+        var out = new QueryWrapper("--Selects 1\nSELECT 1").window(1,0).query();
+
+        assert.equal(out, "SELECT * FROM ( SELECT 1) AS cdbq_1 LIMIT 1 OFFSET 0");
+    });
+    
+    it('Query with multiple comments', function(){
+        var out = new QueryWrapper("SELECT--C\n--2\n1").window(1,0).query();
+
+        assert.equal(out, "SELECT * FROM (SELECT  1) AS cdbq_1 LIMIT 1 OFFSET 0");
+    });
 });
