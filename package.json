@@ -14,10 +14,7 @@
     "contributors": [
         "Raul Ochoa <rochoa@cartodb.com>"
     ],
-    "licenses": [{
-        "type": "BSD",
-        "url": "https://github.com/CartoDB/node-cartodb-psql/blob/master/LICENSE"
-    }],
+    "license": "BSD-3-Clause",
     "dependencies": {
         "pg": "git://github.com/CartoDB/node-postgres.git#2.6.2-cdb3",
         "debug": "~2.2.0",
