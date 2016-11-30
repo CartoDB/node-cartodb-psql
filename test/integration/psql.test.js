@@ -119,7 +119,7 @@ describe('psql', function() {
 });
 });
 
-describe('client gets keep-alive config', function() {
+describe.skip('client gets keep-alive config', function() {
     before(function() {
         global.settings.db_use_config_object = true;
     });
