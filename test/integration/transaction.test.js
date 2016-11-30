@@ -99,12 +99,8 @@ describe('transaction', function() {
                 query.on('error', function(err) {
                     assert.ok(err);
                     assert.equal(err.message, 'column "error" does not exist');
-                });
-
-                query.on('end', function() {
                     psql.eventedQuery('select 1 as foo', scenario.assertFn(done));
                 });
-
             });
         });
     });
