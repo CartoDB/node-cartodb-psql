@@ -16,7 +16,7 @@
     ],
     "license": "BSD-3-Clause",
     "dependencies": {
-        "pg": "4.0.0",
+        "pg": "6.1.0",
         "debug": "~2.2.0",
         "step": "~0.0.5",
         "underscore": "~1.6.x"

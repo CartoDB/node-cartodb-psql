@@ -22,7 +22,7 @@ var TRANSACTION_ABORTED_ERR_MESSAGE = 'current transaction is aborted, commands 
 describe('transaction', function() {
 
     beforeEach(function() {
-        pg.pools.all = {};
+        pg._pools = [];
     });
 
     var querySuite = [
