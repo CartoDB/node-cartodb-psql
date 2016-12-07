@@ -119,7 +119,7 @@ describe('psql', function() {
 });
 });
 
-describe.skip('client gets keep-alive config', function() {
+describe('client gets keep-alive config', function() {
     before(function() {
         global.settings.db_use_config_object = true;
     });
@@ -158,8 +158,7 @@ describe.skip('client gets keep-alive config', function() {
 
             close();
 
-            assert.equal(client.connectionParameters.keepAlive.enabled, keepAliveEnabled);
-            assert.equal(client.connectionParameters.keepAlive.initialDelay, keepAliveInitialDelay);
+            assert.equal(client.connectionParameters.keepAlive, keepAliveEnabled);
 
             done();
         });
