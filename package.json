@@ -16,7 +16,7 @@
     ],
     "license": "BSD-3-Clause",
     "dependencies": {
-        "pg": "cartodb/node-postgres#cdb-6.1",
+        "pg": "cartodb/node-postgres#6.1.2-cdb1",
         "debug": "~2.2.0",
         "step": "~0.0.5",
         "underscore": "~1.6.x"
