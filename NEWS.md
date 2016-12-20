@@ -1,5 +1,7 @@
-## Version 0.6.2 (2015-mm-dd)
-
+## Version 0.7.0 (2016-mm-dd)
+ - Upgrades pg to 6.1.2-cdb1.
+ - Upgrade dev dependencies.
+ - Replace comments with a single space #9.
 
 ## Version 0.6.1 (2015-09-16)
  - Use debug module to not output to stdout by default
