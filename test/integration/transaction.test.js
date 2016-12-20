@@ -22,7 +22,7 @@ var TRANSACTION_ABORTED_ERR_MESSAGE = 'current transaction is aborted, commands 
 describe('transaction', function() {
 
     beforeEach(function() {
-        pg.pools.all = {};
+        pg._pools = [];
     });
 
     var querySuite = [
@@ -99,12 +99,8 @@ describe('transaction', function() {
                 query.on('error', function(err) {
                     assert.ok(err);
                     assert.equal(err.message, 'column "error" does not exist');
-                });
-
-                query.on('end', function() {
                     psql.eventedQuery('select 1 as foo', scenario.assertFn(done));
                 });
-
             });
         });
     });

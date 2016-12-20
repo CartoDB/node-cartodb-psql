@@ -158,8 +158,7 @@ describe('client gets keep-alive config', function() {
 
             close();
 
-            assert.equal(client.connectionParameters.keepAlive.enabled, keepAliveEnabled);
-            assert.equal(client.connectionParameters.keepAlive.initialDelay, keepAliveInitialDelay);
+            assert.equal(client.connectionParameters.keepAlive, keepAliveEnabled);
 
             done();
         });
