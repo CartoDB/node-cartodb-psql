@@ -1,7 +1,7 @@
 {
     "name": "cartodb-psql",
     "description": "A simple postgres wrapper with logic about username and database to connect",
-    "version": "0.6.2",
+    "version": "0.7.0",
     "main": "./lib/psql.js",
     "repository": {
         "type": "git",
@@ -18,12 +18,12 @@
     "dependencies": {
         "pg": "cartodb/node-postgres#6.1.2-cdb1",
         "debug": "~2.2.0",
-        "step": "~0.0.5",
-        "underscore": "~1.6.x"
+        "step": "~0.0.6",
+        "underscore": "~1.6.0"
     },
     "devDependencies": {
-        "jshint": "^2.7.0",
-        "mocha": "^2.2.4"
+        "jshint": "^2.9.4",
+        "mocha": "^3.2.0"
     },
     "scripts": {
         "test": "make test-all"
