@@ -1,4 +1,4 @@
-## Version 0.7.0 (2016-mm-dd)
+## Version 0.7.0 (2016-12-21)
  - Upgrades pg to 6.1.2-cdb1.
  - Upgrade dev dependencies.
  - Replace comments with a single space #9.
