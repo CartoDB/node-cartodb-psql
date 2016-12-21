@@ -13,11 +13,9 @@ matrix:
     - node_js: "0.10"
       addons:
         postgresql: "9.3"
-      env: []
     - node_js: "0.10"
       addons:
         postgresql: "9.5"
-      env: []
     - node_js: "4"
       addons:
         postgresql: "9.5"
