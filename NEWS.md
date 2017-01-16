@@ -1,3 +1,5 @@
+## Version 0.7.2 (2017-mm-dd)
+
 ## Version 0.7.1 (2017-01-16)
  - Remove maxRowSize after query ends or errors #15.
 
