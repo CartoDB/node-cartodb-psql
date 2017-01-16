@@ -1,5 +1,5 @@
 ## Version 0.7.1 (2016-mm-dd)
-
+ - Remove maxRowSize after query ends or errors #15.
 
 ## Version 0.7.0 (2016-12-21)
  - Upgrades pg to 6.1.2-cdb1.
