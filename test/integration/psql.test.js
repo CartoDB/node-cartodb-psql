@@ -178,6 +178,18 @@ describe('psql config-object:' + useConfigObject, function() {
             });
         });
     });
+
+    it('should parse float4', function(done) {
+        var psql = new PSQL(dbopts_auth);
+        psql.query('select ARRAY[1.0::float4,null]::float4[] as f', function(err, result) {
+            assert.ok(!err);
+            assert.ok(result);
+            assert.ok(result.rows);
+            assert.ok(result.rows.length, 1);
+            assert.deepEqual(result.rows[0].f, [1.0, null]);
+            done();
+        });
+    });
 });
 });
 
