@@ -151,6 +151,33 @@ describe('psql config-object:' + useConfigObject, function() {
             done();
         });
     });
+
+    describe('readonly', function() {
+        it('should work to read when using readonly', function(done){
+            var psql = new PSQL(dbopts_auth);
+            psql.query('select 1 as id', function(err, result) {
+                assert.ok(!err);
+                assert.ok(result);
+                assert.ok(result.rows);
+                assert.ok(result.rows.length, 1);
+                done();
+            }, true);
+        });
+
+        it('should fail to write when using readonly', function(done){
+            var psql = new PSQL(dbopts_auth);
+            var sql = "DROP TABLE IF EXISTS wadus;" +
+                " CREATE TABLE wadus (id integer)";
+            psql.query(sql, function(/*err, result*/){
+                sql = "INSERT INTO wadus (id) VALUES (1)";
+                psql.query(sql, function(err) {
+                    assert.ok(err);
+                    assert.equal(err.message, 'cannot execute INSERT in a read-only transaction');
+                    done();
+                }, true);
+            });
+        });
+    });
 });
 });
 
