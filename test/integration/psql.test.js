@@ -28,9 +28,9 @@ describe('psql config-object:' + useConfigObject, function() {
     });
 
     it('test private user can execute SELECTS on db', function(done){
-        var pg = new PSQL(dbopts_auth);
+        var psql = new PSQL(dbopts_auth);
         var sql = "SELECT 1 as test_sum";
-        pg.query(sql, function(err, result){
+        psql.query(sql, function(err, result){
             assert.ok(!err, err);
             assert.equal(result.rows[0].test_sum, 1);
             done();
@@ -38,22 +38,22 @@ describe('psql config-object:' + useConfigObject, function() {
     });
 
     it('test private user can execute CREATE on db', function(done){
-        var pg = new PSQL(dbopts_auth);
+        var psql = new PSQL(dbopts_auth);
         var sql = "DROP TABLE IF EXISTS distributors;" +
             " CREATE TABLE distributors (id integer, name varchar(40), UNIQUE(name))";
-        pg.query(sql, function(err/*, result*/){
+        psql.query(sql, function(err/*, result*/){
             assert.ok(_.isNull(err));
             done();
         });
     });
 
     it('test private user can execute INSERT on db', function(done){
-        var pg = new PSQL(dbopts_auth);
+        var psql = new PSQL(dbopts_auth);
         var sql = "DROP TABLE IF EXISTS distributors1;" +
             " CREATE TABLE distributors1 (id integer, name varchar(40), UNIQUE(name))";
-        pg.query(sql, function(/*err, result*/){
+        psql.query(sql, function(/*err, result*/){
             sql = "INSERT INTO distributors1 (id, name) VALUES (1, 'fish')";
-            pg.query(sql,function(err, result){
+            psql.query(sql,function(err, result){
                 assert.deepEqual(result.rows, []);
                 done();
             });
@@ -61,13 +61,13 @@ describe('psql config-object:' + useConfigObject, function() {
     });
 
     it('test public user can execute SELECT on enabled tables', function(done){
-        var pg = new PSQL(dbopts_auth);
+        var psql = new PSQL(dbopts_auth);
         var sql = "DROP TABLE IF EXISTS distributors2;" +
             " CREATE TABLE distributors2 (id integer, name varchar(40), UNIQUE(name));" +
             " GRANT SELECT ON distributors2 TO " + public_user + ";";
-        pg.query(sql, function(/*err, result*/){
-            pg = new PSQL(dbopts_anon);
-            pg.query("SELECT count(*) FROM distributors2", function(err, result){
+        psql.query(sql, function(/*err, result*/){
+            psql = new PSQL(dbopts_anon);
+            psql.query("SELECT count(*) FROM distributors2", function(err, result){
                 assert.equal(result.rows[0].count, 0);
                 done();
             });
@@ -75,14 +75,14 @@ describe('psql config-object:' + useConfigObject, function() {
     });
 
     it('test public user cannot execute INSERT on db', function(done){
-        var pg = new PSQL(dbopts_auth);
+        var psql = new PSQL(dbopts_auth);
         var sql = "DROP TABLE IF EXISTS distributors3;" +
             " CREATE TABLE distributors3 (id integer, name varchar(40), UNIQUE(name));" +
             " GRANT SELECT ON distributors3 TO " + public_user + ";";
-        pg.query(sql, function(/*err, result*/){
+        psql.query(sql, function(/*err, result*/){
 
-            pg = new PSQL(dbopts_anon);
-            pg.query("INSERT INTO distributors3 (id, name) VALUES (1, 'fishy')", function(err/*, result*/){
+            psql = new PSQL(dbopts_anon);
+            psql.query("INSERT INTO distributors3 (id, name) VALUES (1, 'fishy')", function(err/*, result*/){
                 assert.equal(err.message, 'permission denied for relation distributors3');
                 done();
             });
@@ -90,9 +90,9 @@ describe('psql config-object:' + useConfigObject, function() {
     });
 
     it('should fail for /^set/ queries', function(done){
-        var pg = new PSQL(dbopts_auth);
+        var psql = new PSQL(dbopts_auth);
         var sql = "set statement_timeout=1000; select 1";
-        pg.query(sql, function(err){
+        psql.query(sql, function(err){
             assert.ok(err);
             assert.equal(err.message, 'SET command is forbidden');
             done();
@@ -100,9 +100,9 @@ describe('psql config-object:' + useConfigObject, function() {
     });
 
     it('should fail for /^\\s+set/ queries', function(done){
-        var pg = new PSQL(dbopts_auth);
+        var psql = new PSQL(dbopts_auth);
         var sql = " set statement_timeout=1000; select 1";
-        pg.query(sql, function(err){
+        psql.query(sql, function(err){
             assert.ok(err);
             assert.equal(err.message, 'SET command is forbidden');
             done();
