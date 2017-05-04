@@ -13,6 +13,11 @@ test:
 	@echo "***tests***"
 	test/run_tests.sh ${RUNTESTFLAGS}
 
+coverage:
+	@echo "***coverage***"
+	RUNTESTFLAGS=--with-coverage make test
+
+
 test-all: jshint test
 
-.PHONY: test
+.PHONY: test coverage
