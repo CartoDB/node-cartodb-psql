@@ -5,6 +5,7 @@ require('../setup');
 var _ = require('underscore');
 var assert = require('assert');
 var PSQL = require('../../lib/psql');
+var pg = require('pg');
 
 var public_user = global.settings.db_pubuser;
 
@@ -135,6 +136,20 @@ describe('psql config-object:' + useConfigObject, function() {
             }
           }).on('error', done);
       });
+    });
+
+    it('should throw error on connection failure', function(done) {
+        var pgConnect = pg.connect;
+        pg.connect = function(config, callback) {
+            return callback(new Error('Fake connection error'));
+        };
+        var psql = new PSQL(dbopts_auth);
+        psql.query('select 1', function(err) {
+            pg.connect = pgConnect;
+            assert.ok(err);
+            assert.equal(err.message, 'cannot connect to the database');
+            done();
+        });
     });
 });
 });
