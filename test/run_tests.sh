@@ -3,6 +3,17 @@
 # To make output dates deterministic
 export TZ='Europe/Rome'
 
+OPT_COVERAGE=no      # run tests with coverage
+
+while [ -n "$1" ]; do
+        if test "$1" = "--with-coverage"; then
+                OPT_COVERAGE=yes
+                shift
+                continue
+        else
+                break
+        fi
+done
 
 cd $(dirname $0)
 BASEDIR=$(pwd)
@@ -61,5 +72,12 @@ TESTPASS=`echo ${TESTPASS} | sed "s/<%= user_id %>/${TESTUSERID}/"`
 echo "DROP USER IF EXISTS ${TESTUSER};" | psql -v ON_ERROR_STOP=1 ${TEST_DB} || exit 1
 echo "CREATE USER ${TESTUSER} WITH PASSWORD '${TESTPASS}';" | psql -v ON_ERROR_STOP=1 ${TEST_DB} || exit 1
 
-mocha -t 5000 -u tdd $@ test/**/*.js
+
+if test x"$OPT_COVERAGE" = xyes; then
+  echo "Running tests with coverage"
+  istanbul cover _mocha -- -u tdd -t 5000 $@ test/**/*.js
+else
+  echo "Running tests"
+  mocha -t 5000 -u tdd $@ test/**/*.js
+fi
 exit $?
