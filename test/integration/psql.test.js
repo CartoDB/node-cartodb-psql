@@ -190,6 +190,24 @@ describe('psql config-object:' + useConfigObject, function() {
             done();
         });
     });
+
+    it('should be able to cancel query', function(done) {
+        var psql = new PSQL(dbopts_auth);
+        var sql = 'select i, pg_sleep(1) from generate_series(1, 2) as i';
+        psql.eventedQuery(sql, function(err, query, queryCanceller) {
+            assert.ok(!err);
+
+            queryCanceller();
+            query.on('error', function(err) {
+                assert.ok(err);
+                assert.equal(err.message, 'canceling statement due to user request');
+                done();
+            });
+            query.on('end', function() {
+                done(new Error('Query should not end'));
+            });
+        });
+    });
 });
 });
 
