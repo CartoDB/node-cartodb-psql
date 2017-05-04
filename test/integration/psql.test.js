@@ -21,7 +21,7 @@ dbopts_anon.user = global.settings.db_pubuser;
 dbopts_anon.pass = global.settings.db_pubuser_pass;
 
 [true, false].forEach(function(useConfigObject) {
-describe('psql', function() {
+describe('psql config-object:' + useConfigObject, function() {
 
     before(function() {
         global.settings.db_use_config_object = useConfigObject;
