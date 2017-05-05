@@ -1,4 +1,5 @@
 ## Version 0.8.0 (2017-mm-dd)
+ - Remove `destroyOnError` option as we need to always destroy on error #22.
  - Remove `window_sql` function.
 
 ## Version 0.7.1 (2017-01-16)
