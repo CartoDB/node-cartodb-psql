@@ -110,6 +110,16 @@ describe('psql config-object:' + useConfigObject, function() {
         });
     });
 
+    it('should fail for /^set/ eventend queries', function(done){
+        var psql = new PSQL(dbopts_auth);
+        var sql = "set statement_timeout=1000; select 1";
+        psql.eventedQuery(sql, function(err){
+            assert.ok(err);
+            assert.equal(err.message, 'SET command is forbidden');
+            done();
+        });
+    });
+
     it('eventedQuery provisions a cancel mechanism to abort queries', function (done) {
         var psql = new PSQL(dbopts_auth);
         psql.eventedQuery("SELECT 1 as foo", function(err, query, queryCanceller) {
@@ -145,6 +155,20 @@ describe('psql config-object:' + useConfigObject, function() {
         };
         var psql = new PSQL(dbopts_auth);
         psql.query('select 1', function(err) {
+            pg.connect = pgConnect;
+            assert.ok(err);
+            assert.equal(err.message, 'cannot connect to the database');
+            done();
+        });
+    });
+
+    it('should throw error on connection failure for evented queries', function(done) {
+        var pgConnect = pg.connect;
+        pg.connect = function(config, callback) {
+            return callback(new Error('Fake connection error'));
+        };
+        var psql = new PSQL(dbopts_auth);
+        psql.eventedQuery('select 1', function(err) {
             pg.connect = pgConnect;
             assert.ok(err);
             assert.equal(err.message, 'cannot connect to the database');
