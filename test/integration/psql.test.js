@@ -5,6 +5,7 @@ require('../setup');
 var _ = require('underscore');
 var assert = require('assert');
 var PSQL = require('../../lib/psql');
+var pg = require('pg');
 
 var public_user = global.settings.db_pubuser;
 
@@ -21,16 +22,16 @@ dbopts_anon.user = global.settings.db_pubuser;
 dbopts_anon.pass = global.settings.db_pubuser_pass;
 
 [true, false].forEach(function(useConfigObject) {
-describe('psql', function() {
+describe('psql config-object:' + useConfigObject, function() {
 
     before(function() {
         global.settings.db_use_config_object = useConfigObject;
     });
 
     it('test private user can execute SELECTS on db', function(done){
-        var pg = new PSQL(dbopts_auth);
+        var psql = new PSQL(dbopts_auth);
         var sql = "SELECT 1 as test_sum";
-        pg.query(sql, function(err, result){
+        psql.query(sql, function(err, result){
             assert.ok(!err, err);
             assert.equal(result.rows[0].test_sum, 1);
             done();
@@ -38,22 +39,22 @@ describe('psql', function() {
     });
 
     it('test private user can execute CREATE on db', function(done){
-        var pg = new PSQL(dbopts_auth);
+        var psql = new PSQL(dbopts_auth);
         var sql = "DROP TABLE IF EXISTS distributors;" +
             " CREATE TABLE distributors (id integer, name varchar(40), UNIQUE(name))";
-        pg.query(sql, function(err/*, result*/){
+        psql.query(sql, function(err/*, result*/){
             assert.ok(_.isNull(err));
             done();
         });
     });
 
     it('test private user can execute INSERT on db', function(done){
-        var pg = new PSQL(dbopts_auth);
+        var psql = new PSQL(dbopts_auth);
         var sql = "DROP TABLE IF EXISTS distributors1;" +
             " CREATE TABLE distributors1 (id integer, name varchar(40), UNIQUE(name))";
-        pg.query(sql, function(/*err, result*/){
+        psql.query(sql, function(/*err, result*/){
             sql = "INSERT INTO distributors1 (id, name) VALUES (1, 'fish')";
-            pg.query(sql,function(err, result){
+            psql.query(sql,function(err, result){
                 assert.deepEqual(result.rows, []);
                 done();
             });
@@ -61,13 +62,13 @@ describe('psql', function() {
     });
 
     it('test public user can execute SELECT on enabled tables', function(done){
-        var pg = new PSQL(dbopts_auth);
+        var psql = new PSQL(dbopts_auth);
         var sql = "DROP TABLE IF EXISTS distributors2;" +
             " CREATE TABLE distributors2 (id integer, name varchar(40), UNIQUE(name));" +
             " GRANT SELECT ON distributors2 TO " + public_user + ";";
-        pg.query(sql, function(/*err, result*/){
-            pg = new PSQL(dbopts_anon);
-            pg.query("SELECT count(*) FROM distributors2", function(err, result){
+        psql.query(sql, function(/*err, result*/){
+            psql = new PSQL(dbopts_anon);
+            psql.query("SELECT count(*) FROM distributors2", function(err, result){
                 assert.equal(result.rows[0].count, 0);
                 done();
             });
@@ -75,17 +76,37 @@ describe('psql', function() {
     });
 
     it('test public user cannot execute INSERT on db', function(done){
-        var pg = new PSQL(dbopts_auth);
+        var psql = new PSQL(dbopts_auth);
         var sql = "DROP TABLE IF EXISTS distributors3;" +
             " CREATE TABLE distributors3 (id integer, name varchar(40), UNIQUE(name));" +
             " GRANT SELECT ON distributors3 TO " + public_user + ";";
-        pg.query(sql, function(/*err, result*/){
+        psql.query(sql, function(/*err, result*/){
 
-            pg = new PSQL(dbopts_anon);
-            pg.query("INSERT INTO distributors3 (id, name) VALUES (1, 'fishy')", function(err/*, result*/){
+            psql = new PSQL(dbopts_anon);
+            psql.query("INSERT INTO distributors3 (id, name) VALUES (1, 'fishy')", function(err/*, result*/){
                 assert.equal(err.message, 'permission denied for relation distributors3');
                 done();
             });
+        });
+    });
+
+    it('should fail for /^set/ queries', function(done){
+        var psql = new PSQL(dbopts_auth);
+        var sql = "set statement_timeout=1000; select 1";
+        psql.query(sql, function(err){
+            assert.ok(err);
+            assert.equal(err.message, 'SET command is forbidden');
+            done();
+        });
+    });
+
+    it('should fail for /^\\s+set/ queries', function(done){
+        var psql = new PSQL(dbopts_auth);
+        var sql = " set statement_timeout=1000; select 1";
+        psql.query(sql, function(err){
+            assert.ok(err);
+            assert.equal(err.message, 'SET command is forbidden');
+            done();
         });
     });
 
@@ -115,6 +136,100 @@ describe('psql', function() {
             }
           }).on('error', done);
       });
+    });
+
+    it('should throw error on connection failure', function(done) {
+        var pgConnect = pg.connect;
+        pg.connect = function(config, callback) {
+            return callback(new Error('Fake connection error'));
+        };
+        var psql = new PSQL(dbopts_auth);
+        psql.query('select 1', function(err) {
+            pg.connect = pgConnect;
+            assert.ok(err);
+            assert.equal(err.message, 'cannot connect to the database');
+            done();
+        });
+    });
+
+    describe('readonly', function() {
+        it('should work to read when using readonly', function(done){
+            var psql = new PSQL(dbopts_auth);
+            psql.query('select 1 as id', function(err, result) {
+                assert.ok(!err);
+                assert.ok(result);
+                assert.ok(result.rows);
+                assert.ok(result.rows.length, 1);
+                done();
+            }, true);
+        });
+
+        it('should fail to write when using readonly', function(done){
+            var psql = new PSQL(dbopts_auth);
+            var sql = "DROP TABLE IF EXISTS wadus;" +
+                " CREATE TABLE wadus (id integer)";
+            psql.query(sql, function(/*err, result*/){
+                sql = "INSERT INTO wadus (id) VALUES (1)";
+                psql.query(sql, function(err) {
+                    assert.ok(err);
+                    assert.equal(err.message, 'cannot execute INSERT in a read-only transaction');
+                    done();
+                }, true);
+            });
+        });
+    });
+
+    it('should parse float4', function(done) {
+        var psql = new PSQL(dbopts_auth);
+        psql.query('select ARRAY[1.0::float4,null]::float4[] as f', function(err, result) {
+            assert.ok(!err);
+            assert.ok(result);
+            assert.ok(result.rows);
+            assert.ok(result.rows.length, 1);
+            assert.deepEqual(result.rows[0].f, [1.0, null]);
+            done();
+        });
+    });
+
+    it('should be able to cancel query', function(done) {
+        var psql = new PSQL(dbopts_auth);
+        var sql = 'select i, pg_sleep(1) from generate_series(1, 2) as i';
+        psql.eventedQuery(sql, function(err, query, queryCanceller) {
+            assert.ok(!err);
+
+            queryCanceller();
+            query.on('error', function(err) {
+                assert.ok(err);
+                assert.equal(err.message, 'canceling statement due to user request');
+                done();
+            });
+            query.on('end', function() {
+                done(new Error('Query should not end'));
+            });
+        });
+    });
+
+    it('should fail on maxRowSize exceeded', function(done) {
+        var psql = new PSQL(dbopts_auth);
+        pg.defaults.maxRowSize = 1;
+        var longText = new Array(100).join('a');
+        var sql = 'select \'' + longText + '\' as l from generate_series(1, 2) as i';
+        psql.eventedQuery(sql, function(err, query) {
+            assert.ok(!err);
+            var gotError = false;
+            query.on('error', function(err) {
+                pg.defaults.maxRowSize = undefined;
+                gotError = true;
+                assert.ok(err);
+                assert.equal(err.message, 'Row too large, was 109 bytes');
+                done();
+            });
+            query.on('end', function() {
+                if (!gotError) {
+                    done(new Error('Query should not end'));
+                }
+            });
+        });
     });
 });
 });
