@@ -208,6 +208,29 @@ describe('psql config-object:' + useConfigObject, function() {
             });
         });
     });
+
+    it('should fail on maxRowSize exceeded', function(done) {
+        var psql = new PSQL(dbopts_auth);
+        pg.defaults.maxRowSize = 1;
+        var longText = new Array(100).join('a');
+        var sql = 'select \'' + longText + '\' as l from generate_series(1, 2) as i';
+        psql.eventedQuery(sql, function(err, query) {
+            assert.ok(!err);
+            var gotError = false;
+            query.on('error', function(err) {
+                pg.defaults.maxRowSize = undefined;
+                gotError = true;
+                assert.ok(err);
+                assert.equal(err.message, 'Row too large, was 109 bytes');
+                done();
+            });
+            query.on('end', function() {
+                if (!gotError) {
+                    done(new Error('Query should not end'));
+                }
+            });
+        });
+    });
 });
 });
 
