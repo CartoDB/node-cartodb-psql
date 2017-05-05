@@ -18,6 +18,6 @@ coverage:
 	RUNTESTFLAGS=--with-coverage make test
 
 
-test-all: jshint test
+test-all: test jshint
 
 .PHONY: test coverage
