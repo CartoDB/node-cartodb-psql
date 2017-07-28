@@ -12,7 +12,8 @@
     ],
     "author": "Vizzuality <contact@vizzuality.com> (http://vizzuality.com)",
     "contributors": [
-        "Raul Ochoa <rochoa@cartodb.com>"
+        "Raul Ochoa <rochoa@cartodb.com>",
+        "Daniel García Aubert <dgaubert@carto.com>"
     ],
     "license": "BSD-3-Clause",
     "dependencies": {
