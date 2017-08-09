@@ -1,4 +1,5 @@
-## Version 0.8.1 (2017-mm-dd)
+## Version 0.9.0 (2017-05-05)
+ - Expose `pg.end` #26.
 
 ## Version 0.8.0 (2017-05-05)
  - Remove `destroyOnError` option as we need to always destroy on error #22.
