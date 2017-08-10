@@ -1,3 +1,5 @@
+## Version 0.10.1 (2017-mm-dd)
+
 ## Version 0.10.0 (2017-08-10)
  - Remove check for SET statements.
 
