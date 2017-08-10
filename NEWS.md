@@ -1,4 +1,5 @@
-## Version 0.9.1 (2017-mm-dd)
+## Version 0.10.0 (2017-mm-dd)
+ - Remove check for SET statements.
 
 ## Version 0.9.0 (2017-08-09)
  - Expose `pg.end` #26.

@@ -90,36 +90,6 @@ describe('psql config-object:' + useConfigObject, function() {
         });
     });
 
-    it('should fail for /^set/ queries', function(done){
-        var psql = new PSQL(dbopts_auth);
-        var sql = "set statement_timeout=1000; select 1";
-        psql.query(sql, function(err){
-            assert.ok(err);
-            assert.equal(err.message, 'SET command is forbidden');
-            done();
-        });
-    });
-
-    it('should fail for /^\\s+set/ queries', function(done){
-        var psql = new PSQL(dbopts_auth);
-        var sql = " set statement_timeout=1000; select 1";
-        psql.query(sql, function(err){
-            assert.ok(err);
-            assert.equal(err.message, 'SET command is forbidden');
-            done();
-        });
-    });
-
-    it('should fail for /^set/ eventend queries', function(done){
-        var psql = new PSQL(dbopts_auth);
-        var sql = "set statement_timeout=1000; select 1";
-        psql.eventedQuery(sql, function(err){
-            assert.ok(err);
-            assert.equal(err.message, 'SET command is forbidden');
-            done();
-        });
-    });
-
     it('eventedQuery provisions a cancel mechanism to abort queries', function (done) {
         var psql = new PSQL(dbopts_auth);
         psql.eventedQuery("SELECT 1 as foo", function(err, query, queryCanceller) {
