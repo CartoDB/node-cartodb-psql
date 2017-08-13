@@ -1,3 +1,5 @@
+## Version 0.10.2 (2017-mm-dd)
+
 ## Version 0.10.1 (2017-08-13)
  - Upgrade node-postgres to 6.1.6-cdb1.
 
