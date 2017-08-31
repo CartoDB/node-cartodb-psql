@@ -1,3 +1,6 @@
+## Version 0.6.2 (2017-08-31)
+ - Upgrade pg package to fix pg vulnerability
+
 ## Version 0.6.1 (2015-09-16)
  - Use debug module to not output to stdout by default
 
