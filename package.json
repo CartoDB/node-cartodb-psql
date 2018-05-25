@@ -17,8 +17,8 @@
     ],
     "license": "BSD-3-Clause",
     "dependencies": {
-        "pg": "cartodb/node-postgres#6.1.6-cdb1",
         "debug": "^3.1.0",
+        "pg": "CartoDB/node-postgres#449fac1d6da711ffcc6694ae3c89f85244f48bdc",
         "underscore": "~1.6.0"
     },
     "devDependencies": {
@@ -29,5 +29,7 @@
     "scripts": {
         "test": "make test-all"
     },
-    "engines": { "node": ">= 0.8 < 0.11" }
+    "engines": {
+        "node": ">= 4.5.0"
+    }
 }
