@@ -4,27 +4,21 @@ dist: trusty
 env:
   - PGUSER=postgres PGDATABASE=postgres
 
-node_js: "6"
-addons:
-  postgresql: "9.6"
+env:
+    - POSTGRESQL_VERSION="9.5"
+    - POSTGRESQL_VERSION="10"
 
-matrix:
-  include:
-    - node_js: "0.10"
-      addons:
-        postgresql: "9.3"
-    - node_js: "0.10"
-      addons:
-        postgresql: "9.5"
-    - node_js: "4"
-      addons:
-        postgresql: "9.5"
-    - node_js: "6"
-      addons:
-        postgresql: "9.3"
-    - node_js: "6"
-      addons:
-        postgresql: "9.4"
-    - node_js: "6"
-      addons:
-        postgresql: "9.5"
+node_js:
+  - "6"
+  - "8"
+
+
+before_install:
+  - sudo service postgresql stop;
+  - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests postgresql-$POSTGRESQL_VERSION postgresql-client-$POSTGRESQL_VERSION postgresql-server-dev-$POSTGRESQL_VERSION
+  - echo -e "# TYPE  DATABASE        USER            ADDRESS                 METHOD \nlocal   all             postgres                                trust\nlocal   all             all                                     trust\nhost    all             all             127.0.0.1/32            trust"  | sudo tee /etc/postgresql/$POSTGRESQL_VERSION/main/pg_hba.conf
+  - export PGPORT=`grep ^port /etc/postgresql/$POSTGRESQL_VERSION/main/postgresql.conf | awk '{print $3}'`
+  - export PGUSER=postgres
+  - export PGDATABASE=postgres
+  - sudo service postgresql restart $POSTGRESQL_VERSION;
+  - sed -i 's/5432/'"$PGPORT"'/g' config/environments/test.js
