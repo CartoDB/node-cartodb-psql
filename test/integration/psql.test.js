@@ -84,7 +84,7 @@ describe('psql config-object:' + useConfigObject, function() {
 
             psql = new PSQL(dbopts_anon);
             psql.query("INSERT INTO distributors3 (id, name) VALUES (1, 'fishy')", function(err/*, result*/){
-                assert.equal(err.message, 'permission denied for relation distributors3');
+                assert.ok(err.message.match(/permission denied for .+? distributors3/));
                 done();
             });
         });
