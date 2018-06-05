@@ -295,3 +295,12 @@ describe('client gets keep-alive config', function() {
         });
     });
 });
+
+describe('typmod function', function() {
+    var typmod = 987402;
+    var psql = new PSQL(dbopts_auth, {}, { maxRowSize: 1 });
+    var tmi = psql.typeModInfo(typmod);
+    assert.equal(tmi.srid, 3857);
+    assert.equal(tmi.ndims, 3);
+    assert.equal(tmi.wkbtype, "LineString");
+});
