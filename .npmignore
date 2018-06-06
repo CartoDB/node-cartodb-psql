@@ -9,3 +9,4 @@ test/
 .gitignore
 .travis.yml
 Makefile
+.jshintrc
