@@ -1,5 +1,6 @@
 ## Version 0.11.0 (2018-05-28)
  - Use node-postgres to `6.4.2-cdb1`.
+ - Add `psql.typeModInfo(typmod)`
 
 ## Version 0.10.2 (2017-10-03)
  - Upgrade debug to 3.x.
