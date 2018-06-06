@@ -1,0 +1,11 @@
+node_modules/*
+coverage/
+
+.idea/*
+*.iml
+
+nbproject/
+test/
+.gitignore
+.travis.yml
+Makefile
