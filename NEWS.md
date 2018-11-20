@@ -1,3 +1,8 @@
+## Version 0.13.0 (2018-mm-dd)
+ - Add support for Node.js 10
+ - Add package-lock.json
+ - `.end()` accepts callback
+
 ## Version 0.12.0 (2018-06-06)
  - Add `psql.typeModInfo(typmod)`
 

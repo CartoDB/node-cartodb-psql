@@ -304,3 +304,11 @@ describe('typmod function', function() {
     assert.equal(tmi.ndims, 3);
     assert.equal(tmi.wkbtype, "LineString");
 });
+
+describe('client ends every connection in the pool', function() {
+    it('.end() accepts callback', function (done) {
+        var psql = new PSQL(dbopts_auth);
+
+        psql.end(done);
+    });
+});
