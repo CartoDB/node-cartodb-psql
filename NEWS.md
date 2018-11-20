@@ -1,4 +1,4 @@
-## Version 0.13.0 (2018-mm-dd)
+## Version 0.13.0 (2018-11-20)
  - Add support for Node.js 10
  - Add package-lock.json
  - `.end()` accepts callback
