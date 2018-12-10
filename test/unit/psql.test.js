@@ -45,6 +45,19 @@ describe('psql', function() {
         assert.ok(_.isString(pg1.dbkey()), "pg1 dbkey is " + pg1.dbkey());
     });
 
+    it('dbkey depends on the dbhost', function () {
+	var opt1 = _.clone(dbopts_anon);
+	opt1.host = '192.0.0.8';
+	var pg1 = new PSQL(opt1);
+
+	var opt2 = _.clone(dbopts_anon);
+	opt2.host = '127.0.0.1';
+	var pg2 = new PSQL(opt2);
+
+        assert.ok(pg1.dbkey() !== pg2.dbkey(),
+                  'both PSQL objects using same dbkey ' + pg1.dbkey());
+    });
+
 });
 
 
