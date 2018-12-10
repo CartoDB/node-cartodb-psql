@@ -1,3 +1,6 @@
+## Version 0.13.2 (yyyy-mm-dd)
+
+
 ## Version 0.13.1 (2018-12-10)
  - Include host and port in the dbkey, so that type cache is
    recomputed upon migration #39
