@@ -1,4 +1,6 @@
-## Version 0.13.1 (2018-mm-dd)
+## Version 0.13.1 (2018-12-10)
+ - Include host and port in the dbkey, so that type cache is
+   recomputed upon migration #39
 
 ## Version 0.13.0 (2018-11-20)
  - Add support for Node.js 10
