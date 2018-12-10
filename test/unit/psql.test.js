@@ -55,7 +55,6 @@ describe('psql', function() {
 	var pg2 = new PSQL(opt2);
 
         assert.notStrictEqual(pg1.dbkey(), pg2.dbkey(), 'both PSQL objects using same dbkey ' + pg1.dbkey());
-                  'both PSQL objects using same dbkey ' + pg1.dbkey());
     });
 
 });
