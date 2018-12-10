@@ -54,7 +54,7 @@ describe('psql', function() {
 	opt2.host = '127.0.0.1';
 	var pg2 = new PSQL(opt2);
 
-        assert.ok(pg1.dbkey() !== pg2.dbkey(),
+        assert.notStrictEqual(pg1.dbkey(), pg2.dbkey(), 'both PSQL objects using same dbkey ' + pg1.dbkey());
                   'both PSQL objects using same dbkey ' + pg1.dbkey());
     });
 
