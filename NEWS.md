@@ -1,4 +1,4 @@
-## Version 0.13.2 (2019-09-10)
+## Version 0.14.0 (2019-09-10)
  - Add optional timeout parameter to `PGSQL.query`. 
 
 ## Version 0.13.1 (2018-12-10)
