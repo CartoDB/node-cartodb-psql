@@ -31,6 +31,7 @@
         "docker-test": "./docker-test.sh"
     },
     "engines": {
-        "node": ">= 4.5.0"
+        "node": "^10.15.1",
+        "npm": "^6.4.1"
     }
 }

@@ -173,6 +173,33 @@ describe('psql config-object:' + useConfigObject, function() {
         });
     });
 
+    describe('timeout', function() {
+        it('should fail when the query times out', function(done){
+            var psql = new PSQL(dbopts_auth);
+            psql.query('select pg_sleep(0.2)', function(err) {
+                assert.ok(err);
+                assert.ok(err.message.match(/canceling statement due to statement timeout/));
+                done();
+            }, false, 100);
+        });
+
+        it('should work again without timeout being passed', function(done){
+            var psql = new PSQL(dbopts_auth);
+            psql.query('select pg_sleep(0.2)', function(err) {
+                assert.ok(!err);
+                done();
+            }, false);
+        });
+
+        it('should work when timeout is bigger than the query time', function(done){
+            var psql = new PSQL(dbopts_auth);
+            psql.query('select pg_sleep(0.2)', function(err) {
+                assert.ok(!err);
+                done();
+            }, false, 500);
+        });
+    });
+
     it('should parse float4', function(done) {
         var psql = new PSQL(dbopts_auth);
         psql.query('select ARRAY[1.0::float4,null]::float4[] as f', function(err, result) {
