@@ -1,25 +1,31 @@
-language: node_js
+dist: xenial
 sudo: false
-dist: trusty
-env:
-  - PGUSER=postgres PGDATABASE=postgres
 
-env:
-    - POSTGRESQL_VERSION="9.5"
-    - POSTGRESQL_VERSION="10"
-
+language: node_js
 node_js:
-  - "6"
-  - "8"
   - "10"
+  - "12"
+
+env:
+  global:
+    - PGUSER=postgres
+    - PGDATABASE=postgres
+    - PGOPTIONS='-c client_min_messages=NOTICE'
+    - PGPORT=5432
+    - POSTGIS_VERSION="2.5"
+
+  matrix:
+    - POSTGRESQL_VERSION="10"
+    - POSTGRESQL_VERSION="11"
+    - POSTGRESQL_VERSION="12"
 
 
 before_install:
   - sudo service postgresql stop;
-  - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests postgresql-$POSTGRESQL_VERSION postgresql-client-$POSTGRESQL_VERSION postgresql-server-dev-$POSTGRESQL_VERSION
-  - echo -e "# TYPE  DATABASE        USER            ADDRESS                 METHOD \nlocal   all             postgres                                trust\nlocal   all             all                                     trust\nhost    all             all             127.0.0.1/32            trust"  | sudo tee /etc/postgresql/$POSTGRESQL_VERSION/main/pg_hba.conf
-  - export PGPORT=`grep ^port /etc/postgresql/$POSTGRESQL_VERSION/main/postgresql.conf | awk '{print $3}'`
-  - export PGUSER=postgres
-  - export PGDATABASE=postgres
-  - sudo service postgresql restart $POSTGRESQL_VERSION;
-  - sed -i 's/5432/'"$PGPORT"'/g' config/environments/test.js
+  - sudo apt-get remove postgresql* -y
+  - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests postgresql-$POSTGRESQL_VERSION postgresql-client-$POSTGRESQL_VERSION postgresql-server-dev-$POSTGRESQL_VERSION postgresql-common
+  - sudo apt-get install -y --allow-unauthenticated postgresql-$POSTGRESQL_VERSION-postgis-$POSTGIS_VERSION postgresql-$POSTGRESQL_VERSION-postgis-$POSTGIS_VERSION-scripts postgis
+  - sudo pg_dropcluster --stop $POSTGRESQL_VERSION main
+  - sudo rm -rf /etc/postgresql/$POSTGRESQL_VERSION /var/lib/postgresql/$POSTGRESQL_VERSION
+  - sudo pg_createcluster -u postgres $POSTGRESQL_VERSION main -- -A trust
+  - sudo /etc/init.d/postgresql start $POSTGRESQL_VERSION || sudo journalctl -xe
