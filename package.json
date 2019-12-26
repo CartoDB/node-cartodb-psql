@@ -27,8 +27,7 @@
         "mocha": "^3.2.0"
     },
     "scripts": {
-        "test": "make test-all",
-        "docker-test": "./docker-test.sh"
+        "test": "make test-all"
     },
     "engines": {
         "node": "^10.15.1",

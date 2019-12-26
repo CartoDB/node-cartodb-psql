@@ -1,12 +1,25 @@
 language: node_js
-sudo: required
+sudo: false
+dist: trusty
 env:
-  matrix:
-    - NODE_VERSION=10.15.1
-      DOCKER_IMAGE=carto/nodejs-xenial-pg101:latest
-    - NODE_VERSION=10.15.1
-      DOCKER_IMAGE=carto/nodejs-xenial-pg1121:latest
-services:
-  - docker
-before_install: docker pull ${DOCKER_IMAGE}
-script: npm run docker-test -- ${DOCKER_IMAGE} ${NODE_VERSION}
+  - PGUSER=postgres PGDATABASE=postgres
+
+env:
+    - POSTGRESQL_VERSION="9.5"
+    - POSTGRESQL_VERSION="10"
+
+node_js:
+  - "6"
+  - "8"
+  - "10"
+
+
+before_install:
+  - sudo service postgresql stop;
+  - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests postgresql-$POSTGRESQL_VERSION postgresql-client-$POSTGRESQL_VERSION postgresql-server-dev-$POSTGRESQL_VERSION
+  - echo -e "# TYPE  DATABASE        USER            ADDRESS                 METHOD \nlocal   all             postgres                                trust\nlocal   all             all                                     trust\nhost    all             all             127.0.0.1/32            trust"  | sudo tee /etc/postgresql/$POSTGRESQL_VERSION/main/pg_hba.conf
+  - export PGPORT=`grep ^port /etc/postgresql/$POSTGRESQL_VERSION/main/postgresql.conf | awk '{print $3}'`
+  - export PGUSER=postgres
+  - export PGDATABASE=postgres
+  - sudo service postgresql restart $POSTGRESQL_VERSION;
+  - sed -i 's/5432/'"$PGPORT"'/g' config/environments/test.js
