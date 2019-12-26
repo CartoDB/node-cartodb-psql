@@ -75,7 +75,7 @@ echo "CREATE USER ${TESTUSER} WITH PASSWORD '${TESTPASS}';" | psql -v ON_ERROR_S
 
 if test x"$OPT_COVERAGE" = xyes; then
   echo "Running tests with coverage"
-  ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- -u bdd --exit -t 5000 $@ test/**/*.js
+  ./node_modules/.bin/nyc --reporter=lcov ./node_modules/.bin/_mocha -- -u bdd --exit -t 5000 $@ test/**/*.js
 else
   echo "Running tests"
   ./node_modules/.bin/mocha -t 5000 -u bdd --exit $@ test/**/*.js
