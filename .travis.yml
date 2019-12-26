@@ -1,12 +1,31 @@
+dist: xenial
+sudo: false
+
 language: node_js
-sudo: required
+node_js:
+  - "10"
+  - "12"
+
 env:
+  global:
+    - PGUSER=postgres
+    - PGDATABASE=postgres
+    - PGOPTIONS='-c client_min_messages=NOTICE'
+    - PGPORT=5432
+    - POSTGIS_VERSION="2.5"
+
   matrix:
-    - NODE_VERSION=10.15.1
-      DOCKER_IMAGE=carto/nodejs-xenial-pg101:latest
-    - NODE_VERSION=10.15.1
-      DOCKER_IMAGE=carto/nodejs-xenial-pg1121:latest
-services:
-  - docker
-before_install: docker pull ${DOCKER_IMAGE}
-script: npm run docker-test -- ${DOCKER_IMAGE} ${NODE_VERSION}
+    - POSTGRESQL_VERSION="10"
+    - POSTGRESQL_VERSION="11"
+    - POSTGRESQL_VERSION="12"
+
+
+before_install:
+  - sudo service postgresql stop;
+  - sudo apt-get remove postgresql* -y
+  - sudo apt-get install -y --allow-unauthenticated --no-install-recommends --no-install-suggests postgresql-$POSTGRESQL_VERSION postgresql-client-$POSTGRESQL_VERSION postgresql-server-dev-$POSTGRESQL_VERSION postgresql-common
+  - sudo apt-get install -y --allow-unauthenticated postgresql-$POSTGRESQL_VERSION-postgis-$POSTGIS_VERSION postgresql-$POSTGRESQL_VERSION-postgis-$POSTGIS_VERSION-scripts postgis
+  - sudo pg_dropcluster --stop $POSTGRESQL_VERSION main
+  - sudo rm -rf /etc/postgresql/$POSTGRESQL_VERSION /var/lib/postgresql/$POSTGRESQL_VERSION
+  - sudo pg_createcluster -u postgres $POSTGRESQL_VERSION main -- -A trust
+  - sudo /etc/init.d/postgresql start $POSTGRESQL_VERSION || sudo journalctl -xe
