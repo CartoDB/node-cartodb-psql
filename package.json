@@ -18,7 +18,8 @@
     "license": "BSD-3-Clause",
     "dependencies": {
         "debug": "^3.1.0",
-        "pg": "github:cartodb/node-postgres#6.4.2-cdb2",
+        "pg": "https://gitpkg.now.sh/CartoDB/node-postgres/packages/pg?cdb-8.7.1-development",
+        "pg-cursor": "https://gitpkg.now.sh/CartoDB/node-postgres/packages/pg-cursor?cdb-8.7.1-development",
         "underscore": "~1.6.0"
     },
     "devDependencies": {
