@@ -23,7 +23,7 @@
     },
     "devDependencies": {
         "jshint": "^2.10.3",
-        "mocha": "^6.2.2",
+        "mocha": "^10.2.0",
         "nyc": "^15.0.0"
     },
     "scripts": {
